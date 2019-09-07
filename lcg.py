@@ -4,7 +4,6 @@ import math
 
 def histogram(self):
     nums = [self.generate() for _ in range(100)]
-    print(nums)
     plt.hist(nums, bins=10)
     plt.ylabel('Distribution')
     plt.title(self)
@@ -101,18 +100,6 @@ class UnionGen:
         return '5. Union method generator'
 
 
-
-histogram(LCG())
-
-histogram(QCG())
-
-histogram(FibGen())
-
-histogram(ICG())
-
-histogram(UnionGen())
-
-
 class Sigma:
     def __init__(self):
         self.n = 12
@@ -149,7 +136,7 @@ class Polar:
             self.s = self.__transform()
         self.x1 = self.v1 * math.sqrt(-2 * math.log(self.s) / self.s)
         self.x2 = self.v2 * math.sqrt(-2 * math.log(self.s) / self.s)
-        return self.x1**2 + self.x2*2
+        return self.x1 ** 2 + self.x2 * 2
 
     def __str__(self):
         return '7. Polar coordinates method generator'
@@ -209,12 +196,13 @@ class ArensGen:
 
     def __check_x(self):
         self.__find_x_y()
-        while self.x<=0:
+        while self.x <= 0:
             self.__find_x_y()
 
     def generate(self):
         self.__check_x()
-        while self.v > (1+self.y**2)*math.exp((self.a-1)*math.log(self.x/(self.a-1))-math.sqrt(2*self.a-1)*self.y):
+        while self.v > (1 + self.y ** 2) * math.exp(
+                (self.a - 1) * math.log(self.x / (self.a - 1)) - math.sqrt(2 * self.a - 1) * self.y):
             self.__check_x()
         return self.x
 
@@ -222,12 +210,20 @@ class ArensGen:
         return '10. Arens method generator'
 
 
-histogram(Sigma())
+def menu(number, hist=False):
+    generators = {
+        1: LCG(), 2: QCG(), 3: FibGen(), 4: ICG(), 5: UnionGen(),
+        6: Sigma(), 7: Polar(), 8: CorrelationGen(), 9: LogGen(), 10: ArensGen()
+    }
+    if hist:
+        histogram(generators[number])
+    return generators[number].generate() if number < 11 else 'wrong number'
 
-histogram(Polar())
 
-histogram(CorrelationGen())
+def main():
+    for i in range(1, 11):
+        print(menu(i, hist=True))
 
-histogram(LogGen())
 
-histogram(ArensGen())
+if __name__ == '__main__':
+    main()
