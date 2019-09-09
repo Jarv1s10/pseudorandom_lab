@@ -3,24 +3,44 @@ import math
 
 
 def histogram(self):
-    nums = [self.generate() for _ in range(100)]
-    plt.hist(nums, bins=10)
+    plt.hist([self.generate() for _ in range(1000)], bins=10)
     plt.ylabel('Distribution')
     plt.title(self)
     plt.show()
 
 
-class CG:
-    def __init__(self):
-        self.x_value = 123456789
-        self.a = 101427
-        self.c = 321
-        self.m = 2 ** 31
+def my_hist(obj, type):
+    if type < 6:
+        res = [0] * 10
+    elif 6 <= type < 9:
+        res = [0] * 7
+    else:
+        res = [0] * 100
+    for _ in range(1000):
+        num = obj.generate()
+        if type < 6:
+            # res = [0] * 10
+            for i in range(10):
+                if i / 10 <= num <= i / 10 + 0.1:
+                    res[i] += 1
+        elif 6 <= type < 9:
+            for i in range(-3, 4):
+                if i <= num <= i + 1:
+                    res[i + 3] += 1
+                    break
+        elif 9 <= type <= 10:
+            for i in range(101):
+                if i <= num <= num + 1:
+                    res[i] += 1
+    return [round(num / 1000, 2) for num in res]
 
 
-class LCG(CG):
+class LCG:
     def __init__(self):
-        CG.__init__(self)
+        self.x_value = 1234
+        self.a = 19577
+        self.c = 32159
+        self.m = 65537
 
     def __str__(self):
         return "1. Linear congruential generator"
@@ -30,9 +50,12 @@ class LCG(CG):
         return self.x_value / self.m
 
 
-class QCG(CG):
+class QCG:
     def __init__(self):
-        CG.__init__(self)
+        self.x_value = 123456789
+        self.a = 101427
+        self.c = 321
+        self.m = 2 ** 31
         self.d = 201433
 
     def __str__(self):
@@ -102,14 +125,11 @@ class UnionGen:
 
 class Sigma:
     def __init__(self):
-        self.n = 12
         self.val = 0
+        self.ug = UnionGen()
 
     def generate(self):
-        ug = UnionGen()
-        nums = [ug.generate() for _ in range(self.n)]
-        self.val = sum(nums[-12:]) - 6
-        self.n += 12
+        self.val = sum([self.ug.generate() for _ in range(12)]) - 6
         return self.val
 
     def __str__(self):
@@ -216,7 +236,8 @@ def menu(number, hist=False):
         6: Sigma(), 7: Polar(), 8: CorrelationGen(), 9: LogGen(), 10: ArensGen()
     }
     if hist:
-        histogram(generators[number])
+        #histogram(generators[number])
+        print(my_hist(generators[number], number))
     return generators[number].generate() if number < 11 else 'wrong number'
 
 
