@@ -1,12 +1,4 @@
-import matplotlib.pyplot as plt
 import math
-
-
-def histogram(self):
-    plt.hist([self.generate() for _ in range(1000)], bins=10)
-    plt.ylabel('Distribution')
-    plt.title(self)
-    plt.show()
 
 
 def my_hist(obj, type):
@@ -19,7 +11,6 @@ def my_hist(obj, type):
     for _ in range(1000):
         num = obj.generate()
         if type < 6:
-            # res = [0] * 10
             for i in range(10):
                 if i / 10 <= num <= i / 10 + 0.1:
                     res[i] += 1
@@ -30,7 +21,7 @@ def my_hist(obj, type):
                     break
         elif 9 <= type <= 10:
             for i in range(101):
-                if i <= num <= num + 1:
+                if i <= num <= i + 1:
                     res[i] += 1
     return [round(num / 1000, 2) for num in res]
 
@@ -44,7 +35,6 @@ class LCG:
 
     def __str__(self):
         return "1. Linear congruential generator"
-
     def generate(self):
         self.x_value = (self.a * self.x_value + self.c) % self.m
         return self.x_value / self.m
@@ -236,7 +226,6 @@ def menu(number, hist=False):
         6: Sigma(), 7: Polar(), 8: CorrelationGen(), 9: LogGen(), 10: ArensGen()
     }
     if hist:
-        #histogram(generators[number])
         print(my_hist(generators[number], number))
     return generators[number].generate() if number < 11 else 'wrong number'
 
