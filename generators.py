@@ -35,6 +35,7 @@ class LCG:
 
     def __str__(self):
         return "1. Linear congruential generator"
+
     def generate(self):
         self.x_value = (self.a * self.x_value + self.c) % self.m
         return self.x_value / self.m
