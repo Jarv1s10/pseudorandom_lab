@@ -1,13 +1,12 @@
 import math
+import matplotlib.pyplot as plt
 
 
 def my_hist(obj, type):
-    if type < 6:
+    if type < 6 or type > 8:
         res = [0] * 10
     elif 6 <= type < 9:
         res = [0] * 7
-    else:
-        res = [0] * 100
     for _ in range(1000):
         num = obj.generate()
         if type < 6:
@@ -20,10 +19,18 @@ def my_hist(obj, type):
                     res[i + 3] += 1
                     break
         elif 9 <= type <= 10:
-            for i in range(101):
-                if i <= num <= i + 1:
-                    res[i] += 1
+            for i in range(0, 100, 10):
+                if i <= num <= i + 10:
+                    res[i // 10] += 1
     return [round(num / 1000, 2) for num in res]
+
+
+def histogram(self):
+    nums = [self.generate() for _ in range(1000)]
+    plt.hist(nums)
+    plt.ylabel('Distribution')
+    plt.title(self)
+    plt.show()
 
 
 class LCG:
@@ -147,7 +154,7 @@ class Polar:
             self.s = self.__transform()
         self.x1 = self.v1 * math.sqrt(-2 * math.log(self.s) / self.s)
         self.x2 = self.v2 * math.sqrt(-2 * math.log(self.s) / self.s)
-        return self.x1 ** 2 + self.x2 * 2
+        return self.x1 - self.x2
 
     def __str__(self):
         return '7. Polar coordinates method generator'
@@ -221,19 +228,21 @@ class ArensGen:
         return '10. Arens method generator'
 
 
-def menu(number, hist=False):
-    generators = {
-        1: LCG(), 2: QCG(), 3: FibGen(), 4: ICG(), 5: UnionGen(),
-        6: Sigma(), 7: Polar(), 8: CorrelationGen(), 9: LogGen(), 10: ArensGen()
-    }
-    if hist:
-        print(my_hist(generators[number], number))
+generators = {
+    1: LCG(), 2: QCG(), 3: FibGen(), 4: ICG(), 5: UnionGen(),
+    6: Sigma(), 7: Polar(), 8: CorrelationGen(), 9: LogGen(), 10: ArensGen()
+}
+
+
+def menu(number):
     return generators[number].generate() if number < 11 else 'wrong number'
 
 
 def main():
     for i in range(1, 11):
-        print(menu(i, hist=True))
+        # print(menu(i))
+        # histogram(generators[i])
+        print(my_hist(generators[i], i))
 
 
 if __name__ == '__main__':
