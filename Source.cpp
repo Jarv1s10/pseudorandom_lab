@@ -3,6 +3,7 @@
 #include <cmath>
 #include <map>
 #include <vector>
+#include <string>
 using namespace std;
 
 class B {
@@ -43,7 +44,7 @@ private:
 public:
 	double generate() override
 	{
-		x_value = ((d * x_value)*(d*x_value) + a * x_value + c) % m;
+		x_value = ((d * x_value) * (d * x_value) + a * x_value + c) % m;
 		return x_value / double(m);
 	}
 };
@@ -57,9 +58,15 @@ private:
 
 	long long fib(int n)
 	{
-		if (n <= 1)
-			return n;
-		return fib(n - 1) + fib(n - 2);
+		int n1 = 1;
+		int n2 = 1;
+		for (int i = 0; i < n - 2; i++)
+		{
+			int tmp = n1;
+			n1 = n2;
+			n2 += tmp;
+		}
+		return n2;
 	}
 public:
 	double generate()
@@ -134,7 +141,7 @@ public:
 class Polar :public B
 {
 private:
-	double v1, v2, u1, u2, x1, x2, s=0;
+	double v1, v2, u1, u2, x1, x2, s = 0;
 	LCG lcg;
 	ICG inv;
 	double transform()
@@ -161,7 +168,7 @@ public:
 class CorrelationGen :public B
 {
 private:
-	double x, u, v = 0;
+	double x=0, u=0, v = 0;
 	FibGen fib;
 	ICG icg;
 
@@ -177,9 +184,9 @@ public:
 	double generate() override
 	{
 		x = find_x();
-		if (x * x <= pow(5 - 4 * M_E, 0.25) * u)
+		if (x * x <= 5 - 4 * pow(M_E, 0.25) * u)
 			return x;
-		while (x * x >= (pow(4 * M_E, -1.35) / u + 1.4))
+		while (x * x >= (4 * pow(M_E, -1.35)) / u + 1.4)
 			x = find_x();
 		while (x * x > -4 * log(u))
 			x = find_x();
@@ -204,8 +211,8 @@ class ArensGen :public B
 {
 private:
 	ICG icg;
-	double u, x, v, y;
-	int a = 10;
+	double u=0, x=0, v=0, y=0;
+	const int a = 10;
 	void find_x_y()
 	{
 		u = icg.generate();
@@ -229,37 +236,125 @@ public:
 	}
 };
 
-vector<double> historgam(B obj, int type)
+vector<double> histogram(B& obj, int type)
 {
-	
+	vector<double> res(10);
+	if (type > 5 && type < 9)
+		res.resize(7);
+	for (int j = 0; j < 1000; j++)
+	{
+		double num = obj.generate();
+		if (type < 6)
+		{
+			for (int i=0; i < 10; i++)
+			{
+				if (i / 10. <= num && num <= i / 10. + 0.1)
+				{
+					res[i] += 1;
+					break;
+				}
+			}
+		}
+		else if (type < 9)
+		{
+			for (int i = -3; i < 4; i++)
+			{
+				if (i <= num && num <= i + 1)
+				{
+					res[i + 3] += 1;
+					break;
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < 100; i+=10)
+			{
+				if (i <= num && num <= i + 1)
+				{
+					res[int(i/10)] += 1;
+					break;
+				}
+			}
+		}
+	}
+	for (int i = 0; i < res.size(); i++)
+	{
+		res[i] = res[i] / 1000;
+	}
+	return res;
 }
 
 double menu(int number)
 {
-	if (number>0 && number < 11)
+	switch (number)
+	{
+	case 1:
 	{
 		LCG clg;
-		QCG qcg;
-		FibGen fg;
-		ICG icg;
-		UnionGen ug;
-		Sigma s;
-		Polar p;
-		CorrelationGen cg;
-		LogGen lg;
-		ArensGen ag;
-		map<int, B> generators = { {1, clg}, {2, qcg}, {3, fg}, {4, icg}, {5, ug}, {6, s}, {7, p}, {8, cg}, {9, lg}, {10, ag} };
-		B obj = generators[number];
-		return obj.generate();
+		return clg.generate();
 	}
-	else
+	case 2:
 	{
-		cout << "Generators numbers are from 1 to 10" << endl;
+		QCG qcg;
+		return qcg.generate();
+	}
+	case 3:
+	{
+		FibGen fg;
+		return fg.generate();
+	}
+	case 4:
+	{
+		ICG icg;
+		return icg.generate();
+	}
+	case 5:
+	{
+		UnionGen ug;
+		return ug.generate();
+	}
+	case 6:
+	{
+		Sigma s;
+		return s.generate();
+	}
+	case 7:
+	{
+		Polar p;
+		return p.generate();
+	}
+	case 8:
+	{
+		CorrelationGen cg;
+		return cg.generate();
+	}
+	case 9:
+	{
+		LogGen lg;
+		return lg.generate();
+	}
+	case 10:
+	{
+		ArensGen ag;
+		return ag.generate();
+	}
+	default:
+		return -1;
 	}
 }
 
 int main()
 {
-
+	LCG lcg;
+	double sum = 0;
+	auto res1 = histogram(lcg, 1);
+	cout << "1st generator" << endl;
+	for (int i = 0; i < res1.size(); i++)
+	{
+		cout << res1[i] << endl;
+		sum += res1[i];
+	}
+	cout << sum;
 	return 0;
 }

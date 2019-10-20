@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def my_hist(obj, type):
+    res = []
     if type < 6 or type > 8:
         res = [0] * 10
     elif 6 <= type < 9:
@@ -204,7 +205,7 @@ class ArensGen:
     def __init__(self):
         self.icg = ICG()
         self.u = self.x = self.v = self.y = 0
-        self.a = 10
+        self.a = 50
 
     def __find_x_y(self):
         self.u = self.icg.generate()
@@ -240,9 +241,9 @@ def menu(number):
 
 def main():
     for i in range(1, 11):
-        # print(menu(i))
+        print(menu(i))
         # histogram(generators[i])
-        print(my_hist(generators[i], i))
+        print('{}.'.format(i), my_hist(generators[i], i))
 
 
 if __name__ == '__main__':
